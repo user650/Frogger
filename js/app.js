@@ -6,18 +6,18 @@ var STEP_SIZE = .5; // sets how big of a step the player will take each keystrok
 var BOY = 'images/char-boy.png';
 var GIRL = 'images/char-princess-girl.png';
 
-// Beer - if the bugs run them over they begin to stagger up and down
-var Beer = function (x, y) {
+// Drink - if the bugs run them over they begin to stagger up and down
+var Drink = function (x, y) {
     this.x = x;
     this.y = y;
 }
-Beer.prototype.render = function (){
-    this.sprite = 'images/rszHeart.png';
+Drink.prototype.render = function (){
+    this.sprite = 'images/Gem Green.png';
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
 // Enemies our player must avoid
-var Enemy = function(x, y,direction){
+var Enemy = function(x, y, direction){
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -61,10 +61,12 @@ Enemy.prototype.update = function(dt) {
 
     // check for collisions...
 
-    //  ------  bug hits a beer ------
-    /* add one to the number of beers that the bug has drank
-    change the picture of the bug to one with a beer or something
-    remove the beer from the playing area */
+    //  ------  bug hits a b-drink ------
+    /* add one to the number of b-drink that the bug has drank
+    change the picture of the bug to one with a b-drink or something
+    remove the b-drink from the playing area */
+
+
     
     //  ------  bug hits an energy drink ------
     /* add one to the number of e drinks that the bug has drank
@@ -176,6 +178,14 @@ Player.prototype.handleInput = function(key) {
             break;
     }   
 }
+
+
+// create a drink on the playing grid.
+var rand = Math.floor(Math.random() * (8 - 0 + 1)) + 0; 
+var drinkX = -1 + (rand * 51);
+var rand = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
+var drinkY = -16 + (rand * 42);
+var drink = new Drink(drinkX, drinkY);
 
 // instantiate the lady bugs
 var lb1 = new ladyBug (100, FIRST_ROW,1);
