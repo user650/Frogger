@@ -37,11 +37,11 @@ Enemy.prototype.update = function(dt) {
 
     // Reset the bugs that have drifted off of the screen either to the left or the right
     if (this.x > 700) { // the right direction gets reset to the left
-        this.x = -100};
-    }
+        this.x = -100
+    };
     if (this.x < -100) { // the left direction bug gets reset to the right
-        this.x = 700};
-    }
+        this.x = 700
+    };    
 
     // movement up and down occurs for the bugs that are drinking
     if (this.drinks > 0) {
@@ -54,7 +54,7 @@ Enemy.prototype.update = function(dt) {
         // keep the bug within the playing area
         if (this.y < FIRST_ROW) {this.y = FIRST_ROW};  // if it staggers out of the lanes then put it back in bounds
         if (this.y > FIRST_ROW + (ROW_HEIGHT*2)) {this.y = FIRST_ROW + ROW_HEIGHT*2};
-    }
+    };
 
     //movement left and right 
     this.x = this.x + (this.direction*dt*100); // the direction == -1 will force the bug to move to the right.  use the dt to keep the movement the same on all CPUs
