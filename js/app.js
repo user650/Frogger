@@ -6,6 +6,15 @@ var STEP_SIZE = .5; // sets how big of a step the player will take each keystrok
 var BOY = 'images/char-boy.png';
 var GIRL = 'images/char-princess-girl.png';
 
+// Beer - if the bugs run them over they begin to stagger up and down
+var Beer = function (x, y) {
+    this.x = x;
+    this.y = y;
+}
+Beer.prototype.render = function (){
+    this.sprite = 'images/rszHeart.png';
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
 
 // Enemies our player must avoid
 var Enemy = function(x, y,direction){
@@ -25,40 +34,49 @@ var Enemy = function(x, y,direction){
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // If enemy goes off the of the game area to the right or left then rest them 
-    if (this.x > 700) { // the right direction gets rest on the left
+
+    // Reset the bugs that have drifted off of the screen either to the left or the right
+    if (this.x > 700) { // the right direction gets reset to the left
         this.x = -100};
+    }
+    if (this.x < -100) { // the left direction bug gets reset to the right
+        this.x = 700};
+    }
 
-    // the left direction bug gets reset to the left and put him back in his lane becasue he may have staggered out if he was drinking
-    if ((this.direction === -1) && (this.x < -100)) {  
-        this.x = 700; // move him back to the right
-        this.y = ROW_HEIGHT*2; // start him in the middle each time
-
-        // The left flowing bug will take an energy drink every time it goes off to the left.  Cut him off after a 12 pack
-        if (this.drinks <= 11) {this.drinks = this.drinks +1};  
-        if (this.drinks === 1) {this.sprite = 'images/enemy-bug-left-wild1.png'}; // starting to get a little amped
-        if (this.drinks === 3) {this.sprite = 'images/enemy-bug-left-wild2.png'}; // a little more
-        if (this.drinks === 5) {this.sprite = 'images/enemy-bug-left-wild3.png'}; // all hyped up
-    };
+    // movement up and down occurs for the bugs that are drinking
     if (this.drinks > 0) {
+        // calculate the amount of stagger based on a random number that varys by the number of drinks
+        // note that added +1 to max to distribute the random number correctly between min and max
         var max = this.drinks;
         var min = (max*-1);
-        var delta = this.y;
-        
-        // the bug will wiggle out of his lane in porportion to the number of drinks.  
-        //note that added +1 to max to distribute the random number correctly between min and max
         this.y = this.y + (Math.floor(Math.random() * ((max+1) - min) + min)); 
 
+        // keep the bug within the playing area
         if (this.y < FIRST_ROW) {this.y = FIRST_ROW};  // if it staggers out of the lanes then put it back in bounds
         if (this.y > FIRST_ROW + (ROW_HEIGHT*2)) {this.y = FIRST_ROW + ROW_HEIGHT*2};
     }
+
+    //movement left and right 
     this.x = this.x + (this.direction*dt*100); // the direction == -1 will force the bug to move to the right.  use the dt to keep the movement the same on all CPUs
 
-/* if there is a collision then put player back to bigging position.
-     this if statement basically checks to see if rectangle defined as the enemy's body overlaps with the rectangle that defines the player (minus the head).
-     the width and height of the enemy and the player is stored in the wide and tall.  The head height of the player is stored in head. */
+    // check for collisions...
+
+    //  ------  bug hits a beer ------
+    /* add one to the number of beers that the bug has drank
+    change the picture of the bug to one with a beer or something
+    remove the beer from the playing area */
+    
+    //  ------  bug hits an energy drink ------
+    /* add one to the number of e drinks that the bug has drank
+    change the picture to one of the green bugs
+    remove the e drink from the playing area */
+
+    //  ------  Player hits a bug  ------
+    /*If there is a collision then put player back to begining position.
+    this if statement basically checks to see if rectangle defined as the enemy's body overlaps with the rectangle that defines the player (minus the head).
+    the width and height of the enemy and the player is stored in the wide and tall.  The head height of the player is stored in head. */
+    
     if (((player.x <= (this.x + this.wide)) && ((player.x + player.wide) >= this.x)) && (((player.y+player.head)<= this.y+this.tall) && ((player.y+player.tall)>=this.y))){
-            
             // collision detected...
             if (player.sprite == GIRL) {
                 player.sprite = BOY;
@@ -69,6 +87,8 @@ Enemy.prototype.update = function(dt) {
             player.y = PLAYER_START_Y;
     }
 }
+
+
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
