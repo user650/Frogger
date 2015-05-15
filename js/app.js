@@ -1,23 +1,38 @@
 var PLAYER_START_X = 200; // X where the player will start
 var PLAYER_START_Y = 400; // Y where the player will start
 var FIRST_ROW = 60; // Y position where the first enemy will start
-var ROW_HEIGHT = 82;// height of a row in pixels. since this game uses a square grid this is also used as the column 
+var ROW_HEIGHT = 83;// height of a row in pixels.  this was taken from the engine code
+var COL_WIDTH = 101/2; // width of the column as defined in the engine
 var STEP_SIZE = .5; // sets how big of a step the player will take each keystroke
 var BOY = 'images/char-boy.png';
 var GIRL = 'images/char-princess-girl.png';
 
-// Drink - if the bugs run them over they begin to stagger up and down
-var Drink = function (x, y) {
-    this.x = x;
-    this.y = y;
-}
-Drink.prototype.render = function (){
-    this.sprite = 'images/Gem Green.png';
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+
+//returns a random number between min and max
+function RandomInt(min, max) {
+  return Math.floor(Math.random() * (max+1 - min)) + min;
+};
+
+/*places the player back at the start position
+resets the gems on the bugs
+switches the gener of the player */
+function Reset() {
+    // collision detected..
+    if (player.sex == 'female') {
+        player.sprite = BOY;
+        player.sex = 'male';
+    } else {
+        player.sprite = GIRL;
+        player.sex = 'female'
+    };
+    player.x = PLAYER_START_X;   
+    player.y = PLAYER_START_Y;
+
 }
 
+
 // Enemies our player must avoid
-var Enemy = function(x, y, direction){
+var Enemy = function(x, y){
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -27,14 +42,14 @@ var Enemy = function(x, y, direction){
     this.y = y;
     this.wide = 78; //default width for an enemy
     this.tall = 80; //default height for an enemy
-    this.direction = direction; // 1 moves to the right -1 moves to the left
-    this.drinks = 0; //everyone starts out sober
+    this.greenCount = 0; // start out with no green gems
+    this.blackCount = 0; // start out with no black gems
+    this.direction = 1; // by default enemies ony go right unless their subclass allows for changing it
 }
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-
     // Reset the bugs that have drifted off of the screen either to the left or the right
     if (this.x > 700) { // the right direction gets reset to the left
         this.x = -100
@@ -43,13 +58,10 @@ Enemy.prototype.update = function(dt) {
         this.x = 700
     };    
 
-    // movement up and down occurs for the bugs that are drinking
-    if (this.drinks > 0) {
-        // calculate the amount of stagger based on a random number that varys by the number of drinks
-        // note that added +1 to max to distribute the random number correctly between min and max
-        var max = this.drinks;
-        var min = (max*-1);
-        this.y = this.y + (Math.floor(Math.random() * ((max+1) - min) + min)); 
+    // movement up and down occur when the bugs have a black gem count
+    if (this.blackCount > 0) {
+        // calculate the amount of stagger up and down based on the count of black gems
+        this.y = this.y + RandomInt(this.blackCount*-1, this.blackCount); 
 
         // keep the bug within the playing area
         if (this.y < FIRST_ROW) {this.y = FIRST_ROW};  // if it staggers out of the lanes then put it back in bounds
@@ -57,21 +69,100 @@ Enemy.prototype.update = function(dt) {
     };
 
     //movement left and right 
-    this.x = this.x + (this.direction*dt*100); // the direction == -1 will force the bug to move to the right.  use the dt to keep the movement the same on all CPUs
+    this.x = this.x + (this.direction*dt*100*(this.greenCount+1)); // the direction -1 will move left, greenCount moves faster, dt sets speed same on all CPUs
 
     // check for collisions...
 
-    //  ------  bug hits a b-drink ------
-    /* add one to the number of b-drink that the bug has drank
-    change the picture of the bug to one with a b-drink or something
-    remove the b-drink from the playing area */
+    //  ------  bug hits a green gem ------
+    /* add one to the number of green gems that the bug has collected 
+    change the picture of the bug to a little more green 
+    remove the black gem from the playing area */
+ 
+    if (greenGem.hide > 0) {  // if the gem is hidden then dont check for a collision and tick away the hide time
+        greenGem.hide--;
+    }
+    else {
+        if (((greenGem.x <= (this.x + this.wide)) && ((greenGem.x + greenGem.wide) >= this.x)) && (((greenGem.y)<= this.y+this.tall) && ((greenGem.y+greenGem.tall)>=this.y))) {
+            if (this.greenCount < 5) {
+                this.greenCount++; // increment the green count if less than 5
+            } 
+            greenGem.move();//move the gem
+            
+            //assign the beg sprite based on the direction, how many green gems and if they have a duff  
+            // **todo this would be cleaner if you could augment the sprite with the color, duff, diretion rather than replace with a whole picture
+            if (this.greenCount === 1 ){
+                if (this.direction === -1) {
+                    this.sprite = 'images/enemy-bug-left-wild1.png';
+                }
+                else {
+                    this.sprite = 'images/enemy-bug-wild1.png';
+                }
+            }
+            if (this.greenCount === 2 ){
+                if (this.direction === -1) {
+                    this.sprite = 'images/enemy-bug-left-wild2.png';
+                }
+                else {
+                    this.sprite = 'images/enemy-bug-wild2.png';
+                }
+            }
+            if (this.greenCount === 3 ){
+                if (this.direction === -1) {
+                    this.sprite = 'images/enemy-bug-left-wild3.png';
+                }
+                else {
+                    this.sprite = 'images/enemy-bug-wild3.png';
+                }
+            }
+        }
+    }         
+ 
+    //  ------  bug hits a black gem ------
+    /* add one to the number of black gems that the bugs collected
+     move the black gem to antoher area of the screen     
+     remove the black gem from the playing area */
 
-
+    if (blackGem.hide > 0) { //  if the black gem is hidden then do not check for the collision and tick away the hide time
+        blackGem.hide--;
+    }
+    else  {
+        if (((blackGem.x <= (this.x + this.wide)) && ((blackGem.x + blackGem.wide) >= this.x)) && (((blackGem.y)<= this.y+this.tall) && ((blackGem.y+blackGem.tall)>=this.y))) {
+            if (this.blackCount < 5) {
+                this.blackCount++;  // increment the black count if less than 5
+            }
+            blackGem.move(); //move the gem
+        }
+    }
+    // add the duff if the black gem count is greater than one
+    if (this.blackCount >=1) {
+        switch (this.sprite)    {
+            case "images/enemy-bug.png":
+                this.sprite = "images/enemy-bug-duff.png";
+            break;
+            case "images/enemy-bug-left.png":
+                this.sprite = "images/enemy-bug-left-duff.png";
+            break;
+            case "images/enemy-bug-wild1.png":
+                this.sprite = "images/enemy-bug-wild1-duff.png";
+            break;
+            case "images/enemy-bug-wild2.png":
+                this.sprite = "images/enemy-bug-wild2-duff.png";
+            break;
+            case "images/enemy-bug-wild3.png":
+                this.sprite = "images/enemy-bug-wild3-duff.png";
+            break;
+            case "images/enemy-bug-left-wild1.png":
+                this.sprite = "images/enemy-bug-left-wild1-duff.png";
+            break;
+            case "images/enemy-bug-left-wild2.png":
+                this.sprite = "images/enemy-bug-left-wild2-duff.png";
+            break;
+            case "images/enemy-bug-left-wild3.png":
+                this.sprite = "images/enemy-bug-left-wild3-duff.png";
+            break;
+        }
+    }
     
-    //  ------  bug hits an energy drink ------
-    /* add one to the number of e drinks that the bug has drank
-    change the picture to one of the green bugs
-    remove the e drink from the playing area */
 
     //  ------  Player hits a bug  ------
     /*If there is a collision then put player back to begining position.
@@ -79,56 +170,52 @@ Enemy.prototype.update = function(dt) {
     the width and height of the enemy and the player is stored in the wide and tall.  The head height of the player is stored in head. */
     
     if (((player.x <= (this.x + this.wide)) && ((player.x + player.wide) >= this.x)) && (((player.y+player.head)<= this.y+this.tall) && ((player.y+player.tall)>=this.y))){
-            // collision detected...
-            if (player.sprite == GIRL) {
-                player.sprite = BOY;
-            } else {
-                player.sprite = GIRL;
-            };
-            player.x = PLAYER_START_X;   
-            player.y = PLAYER_START_Y;
+        Reset();
     }
 }
-
-
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-// ladyBug is an Enemy object
+// ladyBug is a type of an Ememy that can go left or right
 var ladyBug = function(x, y, direction) {
-    Enemy.call(this,x, y, direction);
-    this.wide = 78; // a lady bug is 78 pixels wide
-    this.tall = 80; // lady bug is 80 pixels tall
-    if (direction == -1) {
+    Enemy.call(this,x, y);
+    this.wide = 78; // a lady bug is 78 pixels wide (same as default)
+    this.tall = 80; // lady bug is 80 pixels tall (same as the default)
+    if (direction == "left") {
         this.sprite = 'images/enemy-bug-left.png';
+        this.direction = -1;
     }
-    else {
+    else { // default is to the right
         this.sprite = 'images/enemy-bug.png';
+        this.direction = 1;
     }
- };
+};
 ladyBug.prototype = Object.create(Enemy.prototype);
 ladyBug.prototype.constructor = ladyBug;
 
 
 // Now write your own player class
 var Player = function(sex) {
-    if (sex == 'F') {
+    if (sex == 'female') {
         this.sprite = 'images/char-princess-girl.png';
+        this.sex = 'female'
     }
     else {  // default to the boy
         this.sprite = 'images/char-boy.png';
+        this.sex = 'male'
     }
     this.x = PLAYER_START_X;   // This sets the starting location for the player    
     this.y = PLAYER_START_Y;
     this.head = 35; // head size of player - this part can poke into enemy without collision
     this.tall = 60; // how tall the payer is
     this.wide = 70; // how wide the player is
+    this.score = [0,0] // boys score, girls score
 };
 
-// This class requires an update(), render() and
+// This class requires an update(), 
 Player.prototype.update = function() {
 };
 
@@ -148,19 +235,28 @@ Player.prototype.handleInput = function(key) {
         case 'up':  // move up only if the feet are below the first row
             if (this.y + this.tall > FIRST_ROW) { 
                 this.y = this.y - (ROW_HEIGHT*STEP_SIZE);
-            } else {
+            } else { // if the player reached the top then score a point for either Boy or Girl then print the score
+                if (player.sex == "female") {
+                    player.score[1]++;
+                    console.log("FEMALE point");
+                } else {
+                    player.score[0]++;
+                    console.log("MALE point");
+                }   
+                    // now print the score at the top of the sceen
                     var canvas = document.querySelector('canvas');
-                    var ctx = canvas.getContext("2d");
-                        //Scott Stubbs added this wonderful code 
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(0,-20,510,70);  // clear out the previous score
                     ctx.font = "36pt Impact";
                     ctx.textAlign = "right";
                     ctx.fillStyle = "white";
                     ctx.strokeStyle = "black";
                     ctx.lineWidth = 3;
                     ctx.textAlign = "left";
-                    ctx.strokeText("Boys: ",0,40);
+                    ctx.strokeText("Boys: "+player.score[0],0,40);
                     ctx.textAlign = "right";
-                    ctx.strokeText("Girls: ",canvas.width,40);
+                    ctx.strokeText("Girls: "+player.score[1],canvas.width,40);
+                Reset() // reset the screen
             }
 
             break;
@@ -179,25 +275,47 @@ Player.prototype.handleInput = function(key) {
     }   
 }
 
+// Gem object creation.  Black gems make bugs go up and down; Green gems make bugs go faster
+var Gem = function (x, y, tall, wide, image) {
+    this.x = x;
+    this.y = y;
+    this.tall = tall;
+    this.wide = wide;
+    this.sprite = image;
+    this.hide = 1000; // will be used for the number of renders to hide
+}
 
-// create a drink on the playing grid.
-var rand = Math.floor(Math.random() * (8 - 0 + 1)) + 0; 
-var drinkX = -1 + (rand * 51);
-var rand = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
-var drinkY = -16 + (rand * 42);
-var drink = new Drink(drinkX, drinkY);
+Gem.prototype.move = function (){
+    this.x = RandomInt(0,6)*this.wide;
+    this.y = FIRST_ROW + RandomInt(1,3)*this.tall;
+    this.hide = 1000; // after moveing hide the gem for this many renders
+}
+
+Gem.prototype.render = function (){
+    if (this.hide === 0) {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+}
+
+// create green and black gems
+var greenGem = new Gem(ROW_HEIGHT*1.5, FIRST_ROW*2, 60, 50,'images/Gem Green.png');
+var blackGem = new Gem(ROW_HEIGHT*2.75, FIRST_ROW*2+ROW_HEIGHT,30,20,'images/Gem Duff.png');
 
 // instantiate the lady bugs
-var lb1 = new ladyBug (100, FIRST_ROW,1);
-var lb2 = new ladyBug (-100, FIRST_ROW,1); // first row goes to the right
-var lb3 = new ladyBug (700, FIRST_ROW + ROW_HEIGHT,-1); //second row goes to the left
-var lb4 = new ladyBug (-50, FIRST_ROW + (2*ROW_HEIGHT),1); //third row goes to the right
+var lb1 = new ladyBug (100, FIRST_ROW);
+var lb2 = new ladyBug (-100, FIRST_ROW); // first row goes to the right
+var lb3 = new ladyBug (700, FIRST_ROW + ROW_HEIGHT,"left"); //second row goes to the left
+var lb4 = new ladyBug (-50, FIRST_ROW + (2*ROW_HEIGHT)); //third row goes to the right
 
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [lb1, lb2, lb3, lb4];
 
-// Place the player object in a variable called player
-var player = new Player("M");
+// Place the player object in a variable called player be default the first player will be boy
+var player = new Player();
+
+/* **todo change th logic so there are physically two player objects, one for the male and one for the female.
+but then the render for the play will need to be changed to only paint the active player */
+//var girlPlayer = new Player('female')
 
 // This listens for key presses and sends the keys to your
 document.addEventListener('keyup', function(e) {

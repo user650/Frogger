@@ -91,9 +91,12 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
+
+
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+
         player.update();
     }
 
@@ -133,7 +136,7 @@ var Engine = (function(global) {
                  * we're using them over and over.
                  */
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
-            }
+                }
         }
 
 
@@ -153,6 +156,8 @@ var Engine = (function(global) {
         });
 
         player.render();
+        greenGem.render();  // put a green gem on the board
+        blackGem.render();  // put a black gem on the board
     }
 
     /* This function does nothing but it could have been a good place to
@@ -171,14 +176,26 @@ var Engine = (function(global) {
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/enemy-bug-left.png',
+        'images/enemy-bug.png', //right facing bugs
+        'images/enemy-bug-wild1.png',
+        'images/enemy-bug-wild2.png',
+        'images/enemy-bug-wild3.png',
+        'images/enemy-bug-duff.png', //right with duff
+        'images/enemy-bug-wild1-duff.png',
+        'images/enemy-bug-wild2-duff.png',
+        'images/enemy-bug-wild3-duff.png',
+        'images/enemy-bug-left.png',//left facing bugs
         'images/enemy-bug-left-wild1.png',
         'images/enemy-bug-left-wild2.png',
         'images/enemy-bug-left-wild3.png',
+        'images/enemy-bug-left-duff.png',//lef with duff
+        'images/enemy-bug-left-wild1-duff.png',
+        'images/enemy-bug-left-wild2-duff.png',
+        'images/enemy-bug-left-wild3-duff.png',
         'images/char-boy.png',
         'images/char-princess-girl.png',
-        'images/Gem Green.png'
+        'images/Gem Green.png',
+        'images/Gem Duff.png'
     ]);
     Resources.onReady(init);
 

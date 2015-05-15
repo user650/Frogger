@@ -1,0 +1,18 @@
+[33mcommit afd9123a2e81318393c53fd5ef189f0ddc9d844e[m
+Author: SS <scstubbs@pacbell.net>
+Date:   Thu May 7 21:24:21 2015 -0400
+
+    first commit
+
+[1mdiff --git a/README.md b/README.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..2d43ac3[m
+[1m--- /dev/null[m
+[1m+++ b/README.md[m
+[36m@@ -0,0 +1,6 @@[m
+[32m+[m[32mfrontend-nanodegree-arcade-game[m
+[32m+[m[32m===============================[m
+[32m+[m
+[32m+[m[32mStudents should use this rubric: https://www.udacity.com/course/viewer#!/c-ud015/l-3072058665/m-3072588797[m
+[32m+[m
+[32m+[m[32mfor self-checking their submission.[m
