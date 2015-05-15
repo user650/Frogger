@@ -298,8 +298,8 @@ Gem.prototype.render = function (){
 }
 
 // create green and black gems
-var greenGem = new Gem(ROW_HEIGHT*1.5, FIRST_ROW*2, 60, 50,'images/Gem Green.png');
-var blackGem = new Gem(ROW_HEIGHT*2.75, FIRST_ROW*2+ROW_HEIGHT,30,20,'images/Gem Duff.png');
+var greenGem = new Gem(ROW_HEIGHT*1.5, FIRST_ROW*2, 50, 50,'images/Gem Green.png');
+var blackGem = new Gem(ROW_HEIGHT*2.75, FIRST_ROW*2+ROW_HEIGHT,20,20,'images/Gem Duff.png');
 
 // instantiate the lady bugs
 var lb1 = new ladyBug (100, FIRST_ROW);
