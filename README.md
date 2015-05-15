@@ -22,3 +22,7 @@ The varables in the program refer to the duff as black gems.
 future improvements:
 - I would like to have the duff and the color added to the bugs by rendering them on top of the base bug image instead of creating a seperate image for every condition.
 - I would like to add actions that occur when the players hit the gems and the duff
+
+References Used:
+- I used the Udacity forums for tips on how to get started: http://discussions.udacity.com/t/a-direction-please/13803/4
+- I also looked at someone's GitHub code for a sample on how to get started with creating the objects: http://abkendal.github.io/Grogger/.  I did not copy paste chunks of code from here but I did use it to help me to get started with determine the order of where to place my objects and functions.    

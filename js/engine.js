@@ -188,7 +188,7 @@ var Engine = (function(global) {
         'images/enemy-bug-left-wild1.png',
         'images/enemy-bug-left-wild2.png',
         'images/enemy-bug-left-wild3.png',
-        'images/enemy-bug-left-duff.png',//lef with duff
+        'images/enemy-bug-left-duff.png', //lef with duff
         'images/enemy-bug-left-wild1-duff.png',
         'images/enemy-bug-left-wild2-duff.png',
         'images/enemy-bug-left-wild3-duff.png',
