@@ -1,7 +1,7 @@
 var PLAYER_START_X = 200; // X where the player will start
 var PLAYER_START_Y = 400; // Y where the player will start
 var FIRST_ROW = 60; // Y position where the first enemy will start
-var ROW_HEIGHT = 83;// height of a row in pixels.  this was taken from the engine code
+var CELL_SIZE = 83;// height of a row in pixels.  this was taken from the engine code
 //var COL_WIDTH = 101; // width of the column as defined in the engine  (not currently used )
 var STEP_SIZE = 1; // sets how big of a step the player will take each keystroke
 var BOY = 'images/char-boy.png';
@@ -85,8 +85,8 @@ Enemy.prototype.update = function(dt) {
         if (this.y < FIRST_ROW) {
             this.y = FIRST_ROW;
         };  // if it staggers out of the lanes then put it back in bounds
-        if (this.y > FIRST_ROW + (ROW_HEIGHT * 2)) {
-            this.y = FIRST_ROW + ROW_HEIGHT * 2;
+        if (this.y > FIRST_ROW + (CELL_SIZE * 2)) {
+            this.y = FIRST_ROW + CELL_SIZE * 2;
         };
     };
 
@@ -240,14 +240,14 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) { 
     switch(key) {
         case 'left': //only move left if there is room
-            this.x = this.x - (ROW_HEIGHT * STEP_SIZE);  // the step size is set at the constant section and a % of the row height
+            this.x = this.x - (CELL_SIZE * STEP_SIZE);  // the step size is set at the constant section and a % of the row height
             if (this.x < -1) {
                 this.x = -1;
             };
         break;
         case 'up':  // move up only if the feet are below the first row
             if (this.y + this.tall > FIRST_ROW) { 
-                this.y = this.y - (ROW_HEIGHT * STEP_SIZE);
+                this.y = this.y - (CELL_SIZE * STEP_SIZE);
             } else { // if the player reached the top then score a point for either Boy or Girl then print the score
                 if (player.sex == "female") {
                     player.score[1]++;
@@ -273,14 +273,14 @@ Player.prototype.handleInput = function(key) {
             };
             break;
         case 'right':
-            this.x = this.x + (ROW_HEIGHT*STEP_SIZE);
+            this.x = this.x + (CELL_SIZE*STEP_SIZE);
             if (this.x > 407) {  // only move right if there is still room
                 this.x = 407;
             };
            break;
         case 'down': // move down only if player is above inital start 
             if (this.y < PLAYER_START_Y) {
-                this.y = this.y + (ROW_HEIGHT*STEP_SIZE);
+                this.y = this.y + (CELL_SIZE*STEP_SIZE);
             };
         default:
             break;
@@ -310,14 +310,14 @@ Gem.prototype.render = function (){
 }
 
 // create green and black gems
-var greenGem = new Gem(ROW_HEIGHT * 1.5, FIRST_ROW * 2, 50, 50,'images/Gem Green.png');
-var blackGem = new Gem(ROW_HEIGHT * 2.75, FIRST_ROW * 2 + ROW_HEIGHT,20,20,'images/Gem Duff.png');
+var greenGem = new Gem(CELL_SIZE * 1.5, FIRST_ROW * 2, 50, 50,'images/Gem Green.png');
+var blackGem = new Gem(CELL_SIZE * 2.75, FIRST_ROW * 2 + CELL_SIZE,20,20,'images/Gem Duff.png');
 
 // instantiate the lady bugs
 var lb1 = new ladyBug (100, FIRST_ROW);
 var lb2 = new ladyBug (-100, FIRST_ROW); // first row goes to the right
-var lb3 = new ladyBug (700, FIRST_ROW + ROW_HEIGHT,"left"); //second row goes to the left
-var lb4 = new ladyBug (-50, FIRST_ROW + (2 * ROW_HEIGHT)); //third row goes to the right
+var lb3 = new ladyBug (700, FIRST_ROW + CELL_SIZE,"left"); //second row goes to the left
+var lb4 = new ladyBug (-50, FIRST_ROW + (2 * CELL_SIZE)); //third row goes to the right
 
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [lb1, lb2, lb3, lb4];
