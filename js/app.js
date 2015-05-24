@@ -13,6 +13,25 @@ function RandomInt(min, max) {
     return Math.floor(Math.random() * (max+1 - min)) + min;
 }
 
+function PlayerBugCollide (p, e) {
+    if (((p.x <= (e.x + e.wide)) && ((p.x + p.wide) >= e.x)) && (((p.y + p.head) <= e.y + e.tall) && ((p.y + p.tall) >= e.y))) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+/* TODO: complete this function
+function GemBugCollide (g, e) {
+    if (((p.x <= (e.x + e.wide)) && ((p.x + p.wide) >= e.x)) && (((p.y + p.head) <= e.y + e.tall) && ((p.y + p.tall) >= e.y))) {
+        return true;
+    }
+    else {
+        return false;
+    }
+} */
+
 /*places the player back at the start position
 resets the gems on the bugs
 switches the gener of the player */
@@ -61,19 +80,19 @@ Enemy.prototype.update = function(dt) {
     // movement up and down occur when the bugs have a black gem count
     if (this.blackCount > 0) {
         // calculate the amount of stagger up and down based on the count of black gems
-        this.y = this.y + RandomInt(this.blackCount*-1, this.blackCount); 
+        this.y = this.y + RandomInt(this.blackCount * -1, this.blackCount); 
 
         // keep the bug within the playing area
         if (this.y < FIRST_ROW) {
             this.y = FIRST_ROW;
         };  // if it staggers out of the lanes then put it back in bounds
-        if (this.y > FIRST_ROW + (ROW_HEIGHT*2)) {
-            this.y = FIRST_ROW + ROW_HEIGHT*2;
+        if (this.y > FIRST_ROW + (ROW_HEIGHT * 2)) {
+            this.y = FIRST_ROW + ROW_HEIGHT * 2;
         };
     };
 
     //movement left and right 
-    this.x = this.x + (this.direction*dt*100*(this.greenCount+1)); // the direction -1 will move left, greenCount moves faster, dt sets speed same on all CPUs
+    this.x = this.x + (this.direction * dt * 100 * (this.greenCount + 1)); // the direction -1 will move left, greenCount moves faster, dt sets speed same on all CPUs
 
     // check for collisions...
 
@@ -86,7 +105,7 @@ Enemy.prototype.update = function(dt) {
         greenGem.hide--;
     }
     else {
-        if (((greenGem.x <= (this.x + this.wide)) && ((greenGem.x + greenGem.wide) >= this.x)) && (((greenGem.y) <= this.y+this.tall) && ((greenGem.y+greenGem.tall) >= this.y))) {
+        if (((greenGem.x <= (this.x + this.wide)) && ((greenGem.x + greenGem.wide) >= this.x)) && (((greenGem.y) <= this.y + this.tall) && ((greenGem.y+greenGem.tall) >= this.y))) {
             if (this.greenCount < 5) {
                 this.greenCount++; // increment the green count if less than 5
             }; 
@@ -172,10 +191,10 @@ Enemy.prototype.update = function(dt) {
     /*If there is a collision then put player back to begining position.
     this if statement basically checks to see if rectangle defined as the enemy's body overlaps with the rectangle that defines the player (minus the head).
     the width and height of the enemy and the player is stored in the wide and tall.  The head height of the player is stored in head. */
-    
-    if (((player.x <= (this.x + this.wide)) && ((player.x + player.wide) >= this.x)) && (((player.y + player.head) <= this.y + this.tall) && ((player.y + player.tall) >= this.y))){
+    // TODO: use a fuction for the collision
+    if (PlayerBugCollide (player, this)) {
         Reset();
-    };
+    }
 }
 
 // Draw the enemy on the screen, required method for game
