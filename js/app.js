@@ -31,6 +31,22 @@ function GemBugCollide (g, e) {
     }
 }
 
+function PrintScore (p) {
+    var canvas = document.querySelector('canvas');
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,-20,510,70);  // clear out the previous score
+    ctx.font = "36pt Impact";
+    ctx.textAlign = "right";
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 3;
+    ctx.textAlign = "left";
+    ctx.strokeText("Boys: " + p.score[0],0,40);
+    ctx.textAlign = "right";
+    ctx.strokeText("Girls: " + p.score[1],canvas.width,40);
+}
+
+
 /*places the player back at the start position
 resets the gems on the bugs
 switches the gener of the player */
@@ -234,6 +250,7 @@ Player.prototype.update = function() {
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    PrintScore(this);
 }
 
 // Player.handleInput() method. You don't need to modify this.
@@ -256,19 +273,6 @@ Player.prototype.handleInput = function(key) {
                     player.score[0]++;
                     console.log("MALE point");
                 };   
-                // now print the score at the top of the sceen
-                var canvas = document.querySelector('canvas');
-                ctx.fillStyle = "white";
-                ctx.fillRect(0,-20,510,70);  // clear out the previous score
-                ctx.font = "36pt Impact";
-                ctx.textAlign = "right";
-                ctx.fillStyle = "white";
-                ctx.strokeStyle = "black";
-                ctx.lineWidth = 3;
-                ctx.textAlign = "left";
-                ctx.strokeText("Boys: "+player.score[0],0,40);
-                ctx.textAlign = "right";
-                ctx.strokeText("Girls: "+player.score[1],canvas.width,40);
                 Reset(); // reset the screen
             };
             break;
