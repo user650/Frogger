@@ -14,6 +14,7 @@ function RandomInt(min, max) {
 }
 
 function PlayerBugCollide (p, e) {
+    /* check to see if there is an ovelap of player and the enemy */
     if (((p.x <= (e.x + e.wide)) && ((p.x + p.wide) >= e.x)) && (((p.y + p.head) <= e.y + e.tall) && ((p.y + p.tall) >= e.y))) {
         return true;
     }
@@ -22,21 +23,21 @@ function PlayerBugCollide (p, e) {
     }
 }
 
-/* TODO: complete this function
 function GemBugCollide (g, e) {
-    if (((p.x <= (e.x + e.wide)) && ((p.x + p.wide) >= e.x)) && (((p.y + p.head) <= e.y + e.tall) && ((p.y + p.tall) >= e.y))) {
+    /* check to see if there is an overlap of the gem and enemy */
+    if (((g.x <= (e.x + e.wide)) && ((g.x + g.wide) >= e.x)) && ((g.y <= e.y + e.tall) && ((g.y + g.tall) >= e.y))) {
         return true;
     }
     else {
         return false;
     }
-} */
+}
 
 /*places the player back at the start position
 resets the gems on the bugs
 switches the gener of the player */
 function Reset() {
-    // collision detected..
+    // sex change 
     if (player.sex == 'female') {
         player.sprite = BOY;
         player.sex = 'male';
@@ -45,6 +46,7 @@ function Reset() {
         player.sprite = GIRL;
         player.sex = 'female';
     };
+    // reposition player to start
     player.x = PLAYER_START_X;   
     player.y = PLAYER_START_Y;
 }
@@ -105,7 +107,7 @@ Enemy.prototype.update = function(dt) {
         greenGem.hide--;
     }
     else {
-        if (((greenGem.x <= (this.x + this.wide)) && ((greenGem.x + greenGem.wide) >= this.x)) && (((greenGem.y) <= this.y + this.tall) && ((greenGem.y+greenGem.tall) >= this.y))) {
+        if (GemBugCollide(greenGem, this)) {
             if (this.greenCount < 5) {
                 this.greenCount++; // increment the green count if less than 5
             }; 
@@ -149,7 +151,7 @@ Enemy.prototype.update = function(dt) {
         blackGem.hide--;
     }
     else  {
-        if (((blackGem.x <= (this.x + this.wide)) && ((blackGem.x + blackGem.wide) >= this.x)) && (((blackGem.y) <= this.y+this.tall) && ((blackGem.y+blackGem.tall) >= this.y))) {
+        if (GemBugCollide(blackGem, this)) {
             if (this.blackCount < 5) {
                 this.blackCount++;  // increment the black count if less than 5
             };
@@ -185,13 +187,11 @@ Enemy.prototype.update = function(dt) {
             break;
         };
     };
-    
 
     //  ------  Player hits a bug  ------
     /*If there is a collision then put player back to begining position.
     this if statement basically checks to see if rectangle defined as the enemy's body overlaps with the rectangle that defines the player (minus the head).
     the width and height of the enemy and the player is stored in the wide and tall.  The head height of the player is stored in head. */
-    // TODO: use a fuction for the collision
     if (PlayerBugCollide (player, this)) {
         Reset();
     }
