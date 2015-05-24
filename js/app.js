@@ -17,8 +17,7 @@ function PlayerBugCollide (p, e) {
     /* check to see if there is an ovelap of player and the enemy */
     if (((p.x <= (e.x + e.wide)) && ((p.x + p.wide) >= e.x)) && (((p.y + p.head) <= e.y + e.tall) && ((p.y + p.tall) >= e.y))) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -27,8 +26,7 @@ function GemBugCollide (g, e) {
     /* check to see if there is an overlap of the gem and enemy */
     if (((g.x <= (e.x + e.wide)) && ((g.x + g.wide) >= e.x)) && ((g.y <= e.y + e.tall) && ((g.y + g.tall) >= e.y))) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -41,8 +39,7 @@ function Reset() {
     if (player.sex == 'female') {
         player.sprite = BOY;
         player.sex = 'male';
-    } 
-    else {
+    } else {
         player.sprite = GIRL;
         player.sex = 'female';
     };
@@ -105,8 +102,7 @@ Enemy.prototype.update = function(dt) {
  
     if (greenGem.hide > 0) {  // if the gem is hidden then dont check for a collision and tick away the hide time
         greenGem.hide--;
-    }
-    else {
+    } else {
         if (GemBugCollide(greenGem, this)) {
             if (this.greenCount < 5) {
                 this.greenCount++; // increment the green count if less than 5
@@ -118,24 +114,21 @@ Enemy.prototype.update = function(dt) {
             if (this.greenCount === 1 ){
                 if (this.direction === -1) {
                     this.sprite = 'images/enemy-bug-left-wild1.png';
-                }
-                else {
+                } else {
                     this.sprite = 'images/enemy-bug-wild1.png';
                 };
             };
             if (this.greenCount === 2 ){
                 if (this.direction === -1) {
                     this.sprite = 'images/enemy-bug-left-wild2.png';
-                }
-                else {
+                } else {
                     this.sprite = 'images/enemy-bug-wild2.png';
                 };
             };
             if (this.greenCount === 3 ){
                 if (this.direction === -1) {
                     this.sprite = 'images/enemy-bug-left-wild3.png';
-                }
-                else {
+                } else {
                     this.sprite = 'images/enemy-bug-wild3.png';
                 };
             };
@@ -149,8 +142,7 @@ Enemy.prototype.update = function(dt) {
 
     if (blackGem.hide > 0) { //  if the black gem is hidden then do not check for the collision and tick away the hide time
         blackGem.hide--;
-    }
-    else  {
+    } else  {
         if (GemBugCollide(blackGem, this)) {
             if (this.blackCount < 5) {
                 this.blackCount++;  // increment the black count if less than 5
@@ -210,8 +202,7 @@ var ladyBug = function(x, y, direction) {
     if (direction == "left") {
         this.sprite = 'images/enemy-bug-left.png';
         this.direction = -1;
-    }
-    else { // default is to the right
+    } else { // default is to the right
         this.sprite = 'images/enemy-bug.png';
         this.direction = 1;
     };
@@ -225,8 +216,7 @@ var Player = function(sex) {
     if (sex == 'female') {
         this.sprite = 'images/char-princess-girl.png';
         this.sex = 'female';
-    }
-    else {  // default to the boy
+    } else {  // default to the boy
         this.sprite = 'images/char-boy.png';
         this.sex = 'male';
     };
@@ -258,13 +248,11 @@ Player.prototype.handleInput = function(key) {
         case 'up':  // move up only if the feet are below the first row
             if (this.y + this.tall > FIRST_ROW) { 
                 this.y = this.y - (ROW_HEIGHT * STEP_SIZE);
-            } 
-            else { // if the player reached the top then score a point for either Boy or Girl then print the score
+            } else { // if the player reached the top then score a point for either Boy or Girl then print the score
                 if (player.sex == "female") {
                     player.score[1]++;
                     console.log("FEMALE point");
-                } 
-                else {
+                } else {
                     player.score[0]++;
                     console.log("MALE point");
                 };   
