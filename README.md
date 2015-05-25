@@ -1,8 +1,19 @@
-frontend-nanodegree-arcade-game
+frontend-nanodegree-arcade-game - FROGGER
 ===============================
 
 Student: Scott Stubbs
 Project: 3
+
+Running the game:
+======================
+To run Frogger - 
+> copy all of game files to a directory on your local computer  including:
+-- index.html
+-- js
+-- resources
+-- css
+
+project code 
 
 Customizations include:
 ======================
