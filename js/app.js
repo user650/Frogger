@@ -58,7 +58,7 @@ function Reset() {
     } else {
         player.sprite = GIRL;
         player.sex = 'female';
-    };
+    }
     // reposition player to start
     player.x = PLAYER_START_X;   
     player.y = PLAYER_START_Y;
@@ -87,10 +87,10 @@ Enemy.prototype.update = function(dt) {
     // Reset the bugs that have drifted off of the screen either to the left or the right
     if (this.x > 700) { // the right direction gets reset to the left
         this.x = -100;
-    };
+    }
     if (this.x < -100) { // the left direction bug gets reset to the right
         this.x = 700;
-    };    
+    }    
 
     // movement up and down occur when the bugs have a black gem count
     if (this.blackCount > 0) {
@@ -100,11 +100,11 @@ Enemy.prototype.update = function(dt) {
         // keep the bug within the playing area
         if (this.y < FIRST_ROW) {
             this.y = FIRST_ROW;
-        };  // if it staggers out of the lanes then put it back in bounds
+        } // if it staggers out of the lanes then put it back in bounds
         if (this.y > FIRST_ROW + (CELL_SIZE * 2)) {
             this.y = FIRST_ROW + CELL_SIZE * 2;
-        };
-    };
+        }
+    }
 
     //movement left and right 
     this.x = this.x + (this.direction * dt * 100 * (this.greenCount + 1)); // the direction -1 will move left, greenCount moves faster, dt sets speed same on all CPUs
@@ -122,7 +122,7 @@ Enemy.prototype.update = function(dt) {
         if (GemBugCollide(greenGem, this)) {
             if (this.greenCount < 5) {
                 this.greenCount++; // increment the green count if less than 5
-            }; 
+            } 
             greenGem.move();//move the gem
             
             // assign the bug sprite based on the direction, how many green gems and if they have a duff on their back  
@@ -132,24 +132,24 @@ Enemy.prototype.update = function(dt) {
                     this.sprite = 'images/enemy-bug-left-wild1.png';
                 } else {
                     this.sprite = 'images/enemy-bug-wild1.png';
-                };
-            };
+                }
+            }
             if (this.greenCount === 2 ){
                 if (this.direction === -1) {
                     this.sprite = 'images/enemy-bug-left-wild2.png';
                 } else {
                     this.sprite = 'images/enemy-bug-wild2.png';
-                };
-            };
+                }
+            }
             if (this.greenCount === 3 ){
                 if (this.direction === -1) {
                     this.sprite = 'images/enemy-bug-left-wild3.png';
                 } else {
                     this.sprite = 'images/enemy-bug-wild3.png';
-                };
-            };
-        };
-    };    
+                }
+            }
+        }
+    } 
  
     //  ------  bug hits a black gem ------
     /* add one to the number of black gems that the bugs collected
@@ -162,10 +162,10 @@ Enemy.prototype.update = function(dt) {
         if (GemBugCollide(blackGem, this)) {
             if (this.blackCount < 5) {
                 this.blackCount++;  // increment the black count if less than 5
-            };
+            }
             blackGem.move(); //move the gem
-        };
-    };
+        }
+    }
     // add the duff if the black gem count is greater than one
     if (this.blackCount >= 1) {
         switch (this.sprite) {
@@ -193,8 +193,8 @@ Enemy.prototype.update = function(dt) {
             case "images/enemy-bug-left-wild3.png":
                 this.sprite = "images/enemy-bug-left-wild3-duff.png";
             break;
-        };
-    };
+        }
+    }
 
     //  ------  Player hits a bug  ------
     /*If there is a collision then put player back to begining position.
@@ -203,12 +203,11 @@ Enemy.prototype.update = function(dt) {
     if (PlayerBugCollide (player, this)) {
         Reset();
     }
-}
-
+};
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // ladyBug is a type of an Ememy that can go left or right
 var ladyBug = function(x, y, direction) {
@@ -221,10 +220,11 @@ var ladyBug = function(x, y, direction) {
     } else { // default is to the right
         this.sprite = 'images/enemy-bug.png';
         this.direction = 1;
-    };
+    }
 };
 ladyBug.prototype = Object.create(Enemy.prototype);
 ladyBug.prototype.constructor = ladyBug;
+
 
 
 // Now write your own player class
@@ -235,7 +235,7 @@ var Player = function(sex) {
     } else {  // default to the boy
         this.sprite = 'images/char-boy.png';
         this.sex = 'male';
-    };
+    }
     this.x = PLAYER_START_X;   // This sets the starting location for the player    
     this.y = PLAYER_START_Y;
     this.head = 35; // head size of player - this part can poke into enemy without collision
@@ -246,12 +246,12 @@ var Player = function(sex) {
 
 // This class requires an update(), 
 Player.prototype.update = function() {
-}
+};
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     PrintScore(this);
-}
+};
 
 // Player.handleInput() method. You don't need to modify this.
 Player.prototype.handleInput = function(key) { 
@@ -260,7 +260,7 @@ Player.prototype.handleInput = function(key) {
             this.x = this.x - (CELL_SIZE * STEP_SIZE);  // the step size is set at the constant section and a % of the row height
             if (this.x < -1) {
                 this.x = -1;
-            };
+            }
         break;
         case 'up':  // move up only if the feet are below the first row
             if (this.y + this.tall > FIRST_ROW) { 
@@ -272,24 +272,25 @@ Player.prototype.handleInput = function(key) {
                 } else {
                     player.score[0]++;
                     console.log("MALE point");
-                };   
+                }   
                 Reset(); // reset the screen
-            };
+            }
             break;
         case 'right':
             this.x = this.x + (CELL_SIZE*STEP_SIZE);
             if (this.x > 407) {  // only move right if there is still room
                 this.x = 407;
-            };
-           break;
+            }
+            break;
         case 'down': // move down only if player is above inital start 
             if (this.y < PLAYER_START_Y) {
                 this.y = this.y + (CELL_SIZE*STEP_SIZE);
-            };
+            }
+            break;
         default:
             break;
-    };   
-}
+    }   
+};
 
 // Gem object creation.  Black gems make bugs go up and down; Green gems make bugs go faster
 var Gem = function (x, y, tall, wide, image) {
@@ -305,13 +306,13 @@ Gem.prototype.move = function (){
     this.x = RandomInt(0,6) * this.wide;
     this.y = FIRST_ROW + RandomInt(1,3) * this.tall;
     this.hide = 1000; // after moveing hide the gem for this many renders
-}
+};
 
 Gem.prototype.render = function (){
     if (this.hide === 0) {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    };
-}
+    }
+};
 
 // create green and black gems
 var greenGem = new Gem(CELL_SIZE * 1.5, FIRST_ROW * 2, 50, 50,'images/Gem Green.png');
