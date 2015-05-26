@@ -262,10 +262,10 @@ Player.prototype.handleInput = function(key) {
                 this.x = -1;
             }
         break;
-        case 'up':  // move up only if the feet are below the first row
-            if (this.y + this.tall > FIRST_ROW) { 
-                this.y = this.y - (CELL_SIZE * STEP_SIZE);
-            } else { // if the player reached the top then score a point for either Boy or Girl then print the score
+        case 'up':  // move up only until player hits the water. 
+            if (this.y - this.tall > FIRST_ROW) { 
+                this.y = this.y -(CELL_SIZE * STEP_SIZE);
+            } else { // if the player reaches the water then score a point for the correct gender and reset the board.
                 if (player.sex == "female") {
                     player.score[1]++;
                     console.log("FEMALE point");
