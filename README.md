@@ -1,13 +1,23 @@
-frontend-nanodegree-arcade-game
+frontend-nanodegree-arcade-game - FROGGER
 ===============================
 
 Student: Scott Stubbs
 Project: 3
 
-Customizations include:
+Running the game:
 ======================
+To run Frogger - 
+> copy all of game files to a directory on your local computer  including:
+-- index.html
+-- js
+-- images
+-- css
+> right click on the index.html, select "open with" and select a browser to run the game
+> The game will start automatically when the index.html is opened with the score set to Boys:0 Girls:0
 
-Game notes:
+
+Game rules:
+======================
 A score will be tracked at the top of the screen to show the boys vs girls score
 The player will change gender after each time a player reaches the top or gets hit by a bug
 The bugs only eat the gems and get the duff.
